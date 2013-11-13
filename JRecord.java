@@ -741,24 +741,22 @@ public class JRecord extends JCompType {
 
         final String initials = getInitials( getName() );
         jj.write( "func (" + initials + " *" + getName()
-            + ") Serialize(archive *binaryarchives.BinaryOutputArchive, doFlush bool) error {\n" );
+            + ") Serialize(archive *binaryarchives.BinaryOutputArchive) error {\n" );
         jj.write( "  var err error\n" );
 
         for( JField jf : mFields ) {
             jj.write( jf.genGoWriteMethodName( initials + "." ) );
         }
         
-        jj.write("if err==nil && doFlush {\n        	 _, err = archive.Flush()\n        	 }\n");
         
         jj.write( "  return err\n" );
 
         jj.write( "}\n\n" );
 
         jj.write( "func (" + initials + " *" + getName()
-            + ") Deserialize(archive *binaryarchives.BinaryInputArchive, doFlush bool) error {\n" );
+            + ") Deserialize(archive *binaryarchives.BinaryInputArchive) error {\n" );
         jj.write( "  var err error\n" );
 
-        jj.write("if doFlush {\n err = archive.InitMessage()\n }\n");
         for( JField jf : mFields ) {
             jj.write( jf.genGoReadMethodName( initials + ".", this ) );
         }
@@ -1129,9 +1127,9 @@ public class JRecord extends JCompType {
         sb.append( prefix );
         sb.append( capitalize( fname ) );
         if (fname.indexOf("[") == -1) {
-            sb.append( ".Deserialize(archive, false)\n" );
+            sb.append( ".Deserialize(archive)\n" );
         } else {
-            sb.append( ".Deserialize(archive, false)\n" );
+            sb.append( ".Deserialize(archive)\n" );
         }
         sb.append( indent + "  }\n\n" );
 
@@ -1146,9 +1144,9 @@ public class JRecord extends JCompType {
         sb.append( prefix );
         sb.append( capitalize( fname ) );
         if (fname.indexOf("[") == -1) {
-          sb.append( ".Serialize(archive, false)\n" );
+          sb.append( ".Serialize(archive)\n" );
         } else  {
-          sb.append( ".Serialize(archive, false)\n" );
+          sb.append( ".Serialize(archive)\n" );
         }
         sb.append( indent + "  }\n\n" );
 
